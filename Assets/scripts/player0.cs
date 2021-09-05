@@ -8,11 +8,13 @@ public class player0 : MonoBehaviour
 
     private BoxCollider2D boxCollider2d;
     private Vector2 moveDelta;
+    private RaycastHit2D hit;
 
 
     // Start is called before the first frame update
     void Start()
     {
+        boxCollider2d = GetComponent<BoxCollider2D>();
 
     }
 
@@ -41,9 +43,23 @@ public class player0 : MonoBehaviour
             transform.localScale = new Vector3(-1, 1, 1);
         }
 
-        // Movement
-
-        transform.Translate(moveDelta * Time.deltaTime);
+        // Movement        
         
+
+        // Collisions and Movement
+        hit = Physics2D.BoxCast(transform.position, boxCollider2d.size, 0, new Vector2(0, moveDelta.y), Mathf.Abs(moveDelta.y * Time.deltaTime), LayerMask.GetMask("Actors", "Blocking"));
+
+        if (hit.collider == null)
+        {
+            transform.Translate(0, moveDelta.y * Time.deltaTime, 0);
+        }
+
+        hit = Physics2D.BoxCast(transform.position, boxCollider2d.size, 0, new Vector2(moveDelta.x, 0), Mathf.Abs(moveDelta.x * Time.deltaTime), LayerMask.GetMask("Actors", "Blocking"));
+
+        if (hit.collider == null)
+        {
+            transform.Translate(moveDelta.x * Time.deltaTime, 0, 0);
+        }
+
     }
 }
